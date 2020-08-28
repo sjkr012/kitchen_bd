@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+    <title>Population Map</title>
+    <script src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=pksoi6244u"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+</head>
+<body>
+<div >  doesn't work </div>
+<div id="map" style="width:100%;height:1000px;"></div>
+<div id="test"> hello </div>
+<!-- <img src="c:\Users\user\Desktop\tes.PNG"> -->
+
+
+<script>
+
+regionGeoJson = [];
+idx = 0;
+
+var map = new naver.maps.Map(document.getElementById('map'), {
+zoom: 13,
+mapTypeId: 'normal',
+center: new naver.maps.LatLng(35.868, 128.599)
+});
+
+var circle = new naver.maps.Circle({
+    map: map,
+    center: new naver.maps.LatLng(37.49541, 127.019817),
+    radius: 3000,
+	strokeColor: 'blue',
+	strokeOpacity: 1,
+	strokeWeight: 3
+});
+
+
+naver.maps.Event.once(map, 'init_stylemap', function () {
+    $.getJSON("./seoul_add.json", function(data){
+		
+    	for (var i = 0; i < data.features.length; i++) {
+    		regionGeoJson[i] = data.features[i];
+
+    	}
+
+ 		startDataLayer();
+    		
+    }).fail(function(){
+        console.log("An error has occurred.");
+    });
+
+});
+
+
+function startDataLayer() {
+	map.data.setStyle(function(feature) {
+		//console.log(feature.property_population); //이런식으로 데이터 찾아서 티어 정해서 색칠 ㄱㄱ..
+		if(feature.property_population > 40000) { // 1st population tier 
+		    var styleOptions = {
+			        fillColor: '#b71c1c',
+			        fillOpacity: 0.8,
+			        strokeColor: 'black',
+			        strokeWeight: 2,
+			        strokeOpacity: 0.4
+			    };			
+		} else if (feature.property_population > 30000 && feature.property_population < 40000) { // 2nd population tier 
+		    var styleOptions = {
+		        fillColor: '#d32f2f',
+		        fillOpacity: 0.8,
+		        strokeColor: 'black',
+		        strokeWeight: 2,
+		        strokeOpacity: 0.4
+		    };			
+		} else if (feature.property_population > 20000 && feature.property_population < 30000) {  // 3rd population tier
+		    var styleOptions = {
+		        fillColor: '#ef5350',
+		        fillOpacity: 0.8,
+		        strokeColor: 'black',
+		        strokeWeight: 2,
+		        strokeOpacity: 0.4
+		    };			
+		} else if (feature.property_population > 10000 && feature.property_population < 20000) { // 4th population tier
+		    var styleOptions = {
+		        fillColor: '#ef9a9a',
+		        fillOpacity: 0.8,
+		        strokeColor: 'black',
+		        strokeWeight: 2,
+		        strokeOpacity: 0.4
+		    };			
+		} else if (feature.property_population < 5000) { // 5th population tier
+		    var styleOptions = {
+			        fillColor: '#ffebee',
+			        fillOpacity: 0.8,
+			        strokeColor: 'black',
+			        strokeWeight: 2,
+			        strokeOpacity: 0.4
+			    };			
+		} else {
+		
+		    var styleOptions = {
+		        fillColor: 'gray',
+		        fillOpacity: 0.5,
+		        strokeColor: 'black',
+		        strokeWeight: 2,
+		        strokeOpacity: 0.4
+		    };
+		}
+	
+	    return styleOptions;
+	});
+	
+	regionGeoJson.forEach(function(geojson) {
+	    map.data.addGeoJson(geojson);
+
+	});
+	
+
+}
+
+/* 	map.data.addListener('click', function(e) {
+var feature = e.feature;
+
+});
+
+map.data.addListener('mouseover', function(e) {
+var feature = e.feature,
+    regionName = feature.getProperty('area1');
+
+});
+
+map.data.addListener('mouseout', function(e) {
+map.data.revertStyle();
+}); */
+
+</script>
+</body>
+</html>

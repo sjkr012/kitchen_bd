@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>some title</title>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="http://requirejs.org/docs/release/2.3.2/minified/require.js"></script>
+</head>
+<body>
+<div id="test">dddd </div>
+<button onClick="testie()"> </button>
+
+<script>
+$(document).ready(function(){
+        $.getJSON("./layer.json", function(data){
+            document.getElementById("test").innerHTML = data.features[15]['properties']['OBJECTID'];
+            console.log("1")
+        }).fail(function(){
+            console.log("An error has occurred.");
+        });
+    });
+     
+
+</script>
+</body>
+</html>
